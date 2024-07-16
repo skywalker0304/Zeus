@@ -162,17 +162,21 @@ class WebSocketClient(asyncio.Protocol):
             try:
                 typ, length, final = self._wshelper.unpack_from(
                     self._data, upto)
-                if length == -1 or upto + length > data_length:
+                if length == -1 or upto + FRAME_HEADER_SIZE + length > data_length:
                     break
                 elif length < 126:
                     self.frame_received(
                         typ, upto + FRAME_HEADER_SIZE, length, final)
                     upto += FRAME_HEADER_SIZE + length
                 elif length < 65536:
+                    if upto + FRAME_HEADER_SIZE + 2 + length > data_length:
+                        break
                     self.frame_received(
                         typ, upto + FRAME_HEADER_SIZE + 2, length, final)
                     upto += FRAME_HEADER_SIZE + 2 + length
                 else:
+                    if upto + FRAME_HEADER_SIZE + 8 + length > data_length:
+                        break
                     self.frame_received(
                         typ, upto + FRAME_HEADER_SIZE + 8, length, final)
                     upto += FRAME_HEADER_SIZE + 8 + length
