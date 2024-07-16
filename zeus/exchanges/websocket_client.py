@@ -211,7 +211,7 @@ class WebSocketClient(asyncio.Protocol):
             self._payload = b""
 
     def on_data_end(self) -> None:
-        """Callback when a tcp packet has been sucessfully processed."""
+        """Callback when data_received has been sucessfully processed."""
 
     def on_message(self) -> None:
         """Callback when an individual message has been received."""
